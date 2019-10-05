@@ -287,10 +287,14 @@ OverlayWidget::OverlayWidget()
 #ifdef Q_OS_LINUX
 	setWindowFlags(Qt::FramelessWindowHint | Qt::MaximizeUsingFullscreenGeometryHint);
 #else // Q_OS_LINUX
-	setWindowFlags(Qt::FramelessWindowHint);
+	setWindowFlags(Qt::SubWindow | Qt::WindowDoesNotAcceptFocus | Qt::CustomizeWindowHint);
+	setMaximumSize(854, 480);
 #endif // Q_OS_LINUX
 	moveToScreen();
 	setAttribute(Qt::WA_NoSystemBackground, true);
+	setAttribute(Qt::WA_NativeWindow, true);
+	setAttribute(Qt::WA_Resized, true);
+	setAttribute(Qt::WA_Moved, true);
 	setAttribute(Qt::WA_TranslucentBackground, true);
 	setMouseTracking(true);
 
@@ -300,9 +304,9 @@ OverlayWidget::OverlayWidget()
 		windowHandle()->setTransientParent(App::wnd()->windowHandle());
 		setWindowModality(Qt::WindowModal);
 	}
-	if (!Platform::IsMac()) {
-		setWindowState(Qt::WindowFullScreen);
-	}
+	//if (!Platform::IsMac()) {
+	//	setWindowState(Qt::WindowFullScreen);
+	//}
 
 	_saveMsgUpdater.setSingleShot(true);
 	connect(&_saveMsgUpdater, SIGNAL(timeout()), this, SLOT(updateImage()));
@@ -349,6 +353,7 @@ void OverlayWidget::moveToScreen(bool force) {
 	if (!force && geometry() == available) {
 		return;
 	}
+	//available.setSize(QSize(800, 600));
 	setGeometry(available);
 
 	auto navSkip = 2 * st::mediaviewControlMargin + st::mediaviewControlSize;
@@ -1837,7 +1842,7 @@ void OverlayWidget::displayDocument(
 		HistoryItem *item,
 		const Data::CloudTheme &cloud) {
 	if (isHidden()) {
-		moveToScreen();
+		moveToScreen(true);
 	}
 	_fullScreenVideo = false;
 	_current = QPixmap();
@@ -1984,7 +1989,7 @@ void OverlayWidget::displayFinished() {
 #else // Q_OS_LINUX
 		show();
 #endif // Q_OS_LINUX
-		Ui::Platform::ShowOverAll(this);
+		Ui::Platform::ShowOverAll(this,true);
 		activateWindow();
 		QApplication::setActiveWindow(this);
 		setFocus();
