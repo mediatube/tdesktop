@@ -1,10 +1,10 @@
-image: Visual Studio 2017
+image: Visual Studio 2019
 test: off
 deploy: off
 clone_folder: C:\TBuild\tdesktop
 environment:
-  GYP_MSVS_OVERRIDE_PATH: 'C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\'
-  GYP_MSVS_VERSION: 2017
+  GYP_MSVS_OVERRIDE_PATH: 'C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\'
+  GYP_MSVS_VERSION: 2019
   matrix:
    - BUILD_VERSION:
   API_ID:
@@ -21,9 +21,14 @@ build:
   project: Telegram\Telegram.sln
 
 configuration:
+  - Debug
   - Release
 
 artifacts:
+  - path: out\Debug\Telegram.exe
+    name: Telegram_debug.exe
+  - path: out\Debug\Telegram.exe.pdb
+    name: Telegram_debug.exe.pdb
   - path: out\Release\Telegram.exe
     name: Telegram_release.exe
   - path: out\Release\Telegram.exe.pdb
