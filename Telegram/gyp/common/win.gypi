@@ -95,7 +95,7 @@
               'FavorSizeOrSpeed': '1',             # Favor fast code (/Ot)
               'RuntimeLibrary': '0',               # Multi-threaded (/MT)
               'EnableEnhancedInstructionSet': '2', # Streaming SIMD Extensions 2 (/arch:SSE2)
-              'WholeProgramOptimization': 'true',  # /GL
+              'WholeProgramOptimization': 'false',  # /GL
             },
             'VCLinkerTool': {
               'GenerateDebugInformation': 'true',  # /DEBUG
