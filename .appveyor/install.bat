@@ -2,7 +2,7 @@
 
 IF "%BUILD_DIR%"=="" SET BUILD_DIR=%cd%
 SET LIB_DIR=%BUILD_DIR%\Libraries
-SET SRC_DIR=%BUILD_DIR%\tdesktop
+SET SRC_DIR=%BUILD_DIR%
 SET QT_VERSION=5_6_2
 
 call:configureBuild
