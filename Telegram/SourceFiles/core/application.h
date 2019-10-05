@@ -123,7 +123,6 @@ public:
 	[[nodiscard]] Settings &settings() {
 		return _settings;
 	}
-	void moveSettingsFrom(Settings &&other);
 	void saveSettingsDelayed(crl::time delay = kDefaultSaveDelay);
 
 	// Dc options and proxy.
@@ -199,16 +198,12 @@ public:
 	[[nodiscard]] crl::time lastNonIdleTime() const;
 	void updateNonIdle();
 
-	void registerLeaveSubscription(QWidget *widget);
-	void unregisterLeaveSubscription(QWidget *widget);
+	void registerLeaveSubscription(not_null<QWidget*> widget);
+	void unregisterLeaveSubscription(not_null<QWidget*> widget);
 
 	// Sandbox interface.
 	void postponeCall(FnMut<void()> &&callable);
 	void refreshGlobalProxy();
-	void activateWindowDelayed(not_null<QWidget*> widget);
-	void pauseDelayedWindowActivations();
-	void resumeDelayedWindowActivations();
-	void preventWindowActivation();
 
 	void quitPreventFinished();
 

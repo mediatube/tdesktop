@@ -8,6 +8,7 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 #include "history/history_widget.h"
 
 #include "api/api_sending.h"
+#include "api/api_text_entities.h"
 #include "boxes/confirm_box.h"
 #include "boxes/send_files_box.h"
 #include "boxes/share_box.h"
@@ -77,6 +78,7 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 #include "ui/widgets/popup_menu.h"
 #include "ui/text_options.h"
 #include "ui/unread_badge.h"
+#include "ui/delayed_activation.h"
 #include "main/main_session.h"
 #include "window/themes/window_theme.h"
 #include "window/notifications_manager.h"
@@ -90,6 +92,8 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 #include "support/support_common.h"
 #include "support/support_autocomplete.h"
 #include "dialogs/dialogs_key.h"
+#include "facades.h"
+#include "app.h"
 #include "styles/style_history.h"
 #include "styles/style_dialogs.h"
 #include "styles/style_window.h"
@@ -131,7 +135,7 @@ ApiWrap::RequestMessageDataCallback replyEditMessageDataCallback() {
 void ActivateWindow(not_null<Window::SessionController*> controller) {
 	const auto window = controller->widget();
 	window->activateWindow();
-	Core::App().activateWindowDelayed(window);
+	Ui::ActivateWindowDelayed(window);
 }
 
 bool ShowHistoryEndInsteadOfUnread(
@@ -998,7 +1002,7 @@ void HistoryWidget::onMentionInsert(UserData *user) {
 	if (user->username.isEmpty()) {
 		replacement = user->firstName;
 		if (replacement.isEmpty()) {
-			replacement = App::peerName(user);
+			replacement = user->name;
 		}
 		entityTag = PrepareMentionTag(user);
 	} else {
@@ -2831,7 +2835,9 @@ void HistoryWidget::saveEditMsg() {
 		_history,
 		session().user()).flags;
 	auto sending = TextWithEntities();
-	auto left = TextWithEntities { textWithTags.text, ConvertTextTagsToEntities(textWithTags.tags) };
+	auto left = TextWithEntities {
+		textWithTags.text,
+		TextUtilities::ConvertTextTagsToEntities(textWithTags.tags) };
 	TextUtilities::PrepareForSending(left, prepareFlags);
 
 	if (!TextUtilities::CutPart(sending, left, MaxMessageSize)) {
@@ -2852,8 +2858,10 @@ void HistoryWidget::saveEditMsg() {
 	if (webPageId == CancelledWebPageId) {
 		sendFlags |= MTPmessages_EditMessage::Flag::f_no_webpage;
 	}
-	auto localEntities = TextUtilities::EntitiesToMTP(sending.entities);
-	auto sentEntities = TextUtilities::EntitiesToMTP(sending.entities, TextUtilities::ConvertOption::SkipLocal);
+	auto localEntities = Api::EntitiesToMTP(sending.entities);
+	auto sentEntities = Api::EntitiesToMTP(
+		sending.entities,
+		Api::ConvertOption::SkipLocal);
 	if (!sentEntities.v.isEmpty()) {
 		sendFlags |= MTPmessages_EditMessage::Flag::f_entities;
 	}
@@ -3155,8 +3163,8 @@ void HistoryWidget::doneShow() {
 	updateControlsVisibility();
 	if (!_historyInited) {
 		updateHistoryGeometry(true);
-	} else if (hasPendingResizedItems()) {
-		updateHistoryGeometry();
+	} else {
+		handlePendingHistoryUpdate();
 	}
 	preloadHistoryIfNeeded();
 	if (App::wnd()) {
@@ -4495,14 +4503,14 @@ void HistoryWidget::sendFileConfirmed(
 
 	auto caption = TextWithEntities{
 		file->caption.text,
-		ConvertTextTagsToEntities(file->caption.tags)
+		TextUtilities::ConvertTextTagsToEntities(file->caption.tags)
 	};
 	const auto prepareFlags = Ui::ItemTextOptions(
 		history,
 		session().user()).flags;
 	TextUtilities::PrepareForSending(caption, prepareFlags);
 	TextUtilities::Trim(caption);
-	auto localEntities = TextUtilities::EntitiesToMTP(caption.entities);
+	auto localEntities = Api::EntitiesToMTP(caption.entities);
 
 	if (itemToEdit) {
 		if (const auto id = itemToEdit->groupId()) {
@@ -4542,7 +4550,7 @@ void HistoryWidget::sendFileConfirmed(
 
 	const auto messageFromId = channelPost ? 0 : session().userId();
 	const auto messagePostAuthor = channelPost
-		? App::peerName(session().user())
+		? session().user()->name
 		: QString();
 
 	if (file->type == SendMediaType::Photo) {
@@ -4998,11 +5006,15 @@ int HistoryWidget::countAutomaticScrollTop() {
 	return qMin(result, _scroll->scrollTopMax());
 }
 
-void HistoryWidget::updateHistoryGeometry(bool initial, bool loadedDown, const ScrollChange &change) {
+void HistoryWidget::updateHistoryGeometry(
+		bool initial,
+		bool loadedDown,
+		const ScrollChange &change) {
 	if (!_history || (initial && _historyInited) || (!initial && !_historyInited)) {
 		return;
 	}
 	if (_firstLoadRequest || _a_show.animating()) {
+		_updateHistoryGeometryRequired = true;
 		return; // scrollTopMax etc are not working after recountHistoryGeometry()
 	}
 
@@ -6306,7 +6318,7 @@ void HistoryWidget::forwardSelected() {
 	if (!_list) {
 		return;
 	}
-	const auto weak = make_weak(this);
+	const auto weak = Ui::MakeWeak(this);
 	Window::ShowForwardMessagesBox(controller(), getSelectedItems(), [=] {
 		if (const auto strong = weak.data()) {
 			strong->clearSelected();
@@ -6321,7 +6333,7 @@ void HistoryWidget::confirmDeleteSelected() {
 	if (items.empty()) {
 		return;
 	}
-	const auto weak = make_weak(this);
+	const auto weak = Ui::MakeWeak(this);
 	const auto box = Ui::show(Box<DeleteMessagesBox>(
 		&session(),
 		std::move(items)));
@@ -6475,7 +6487,7 @@ void HistoryWidget::updateForwardingTexts() {
 				if (!insertedPeers.contains(from)) {
 					insertedPeers.emplace(from);
 					names.push_back(from->shortName());
-					fullname = App::peerName(from);
+					fullname = from->name;
 				}
 				version += from->nameVersion;
 			} else if (const auto info = item->hiddenForwardedInfo()) {
@@ -6544,7 +6556,7 @@ void HistoryWidget::updateReplyToName() {
 	}();
 	_replyToName.setText(
 		st::msgNameStyle,
-		App::peerName(from),
+		from->name,
 		Ui::NameTextOptions());
 	_replyToNameVersion = (_replyEditMsg ? _replyEditMsg : _kbReplyTo)->author()->nameVersion;
 }
@@ -6676,6 +6688,12 @@ void HistoryWidget::paintEditHeader(Painter &p, const QRect &rect, int left, int
 	p.drawTextLeft(left, top + st::msgReplyPadding.top(), width(), tr::lng_edit_message(tr::now));
 
 	if (!_replyEditMsg || _replyEditMsg->history()->peer->isSelf()) return;
+
+	if (const auto megagroup = _replyEditMsg->history()->peer->asMegagroup()) {
+		if (megagroup->amCreator() || megagroup->hasAdminRights()) {
+			return;
+		}
+	}
 
 	QString editTimeLeftText;
 	int updateIn = -1;
@@ -6868,7 +6886,7 @@ QPoint HistoryWidget::clampMousePosition(QPoint point) {
 }
 
 void HistoryWidget::onScrollTimer() {
-	auto d = (_scrollDelta > 0) ? qMin(_scrollDelta * 3 / 20 + 1, int32(MaxScrollSpeed)) : qMax(_scrollDelta * 3 / 20 - 1, -int32(MaxScrollSpeed));
+	auto d = (_scrollDelta > 0) ? qMin(_scrollDelta * 3 / 20 + 1, int32(Ui::kMaxScrollSpeed)) : qMax(_scrollDelta * 3 / 20 - 1, -int32(Ui::kMaxScrollSpeed));
 	_scroll->scrollToY(_scroll->scrollTop() + d);
 }
 

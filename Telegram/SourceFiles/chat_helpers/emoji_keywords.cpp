@@ -168,11 +168,20 @@ void AppendFoundEmoji(
 		std::vector<Result> &result,
 		const QString &label,
 		const std::vector<LangPackEmoji> &list) {
+	// It is important that the 'result' won't relocate while inserting.
+	result.reserve(result.size() + list.size());
+	const auto alreadyBegin = result.data();
+	const auto alreadyEnd = alreadyBegin + result.size();
+
 	auto &&add = ranges::view::all(
 		list
 	) | ranges::view::filter([&](const LangPackEmoji &entry) {
-		const auto i = ranges::find(result, entry.emoji, &Result::emoji);
-		return (i == end(result));
+		const auto i = ranges::find(
+			alreadyBegin,
+			alreadyEnd,
+			entry.emoji,
+			&Result::emoji);
+		return (i == alreadyEnd);
 	}) | ranges::view::transform([&](const LangPackEmoji &entry) {
 		return Result{ entry.emoji, label, entry.text };
 	});
@@ -449,7 +458,7 @@ std::vector<Result> EmojiKeywords::LangPack::query(
 	}
 
 	const auto from = _data.emoji.lower_bound(normalized);
-	auto &&chosen = ranges::make_iterator_range(
+	auto &&chosen = ranges::make_subrange(
 		from,
 		end(_data.emoji)
 	) | ranges::view::take_while([&](const auto &pair) {
