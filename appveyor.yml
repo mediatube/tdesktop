@@ -12,7 +12,7 @@ environment:
   API_HASH:
     secure: 88rlDnhzZhcStAhXGkc3pdM3whMbAmvqbhhrqkTr3P/B9jVFy0NwvtpvjNkSiW1r
 matrix:
-  fast_finish: true
+  fast_finish: false
 
 before_build:
   - .\.appveyor\install.bat
@@ -22,7 +22,7 @@ build:
 
 configuration:
   - Debug
-  - Release
+  - Release /INCREMENTAL
 
 artifacts:
   - path: out\Debug\Telegram.exe
