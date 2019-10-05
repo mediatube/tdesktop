@@ -1,6 +1,6 @@
 @echo off
 
-IF "%BUILD_DIR%"=="" SET BUILD_DIR=C:\TBuild
+IF "%BUILD_DIR%"=="" SET BUILD_DIR=C:\TBuild\build-%random%%random%
 SET LIB_DIR=%BUILD_DIR%\Libraries
 SET SRC_DIR=%BUILD_DIR%\tdesktop
 SET QT_VERSION=5_6_2
