@@ -21,10 +21,10 @@ build:
   project: Telegram\Telegram.sln
 
 configuration:
-  - Release
+  - Debug
 
 artifacts:
-  - path: out\Release\Telegram.exe
+  - path: out\Debug\Telegram.exe
     name: Telegram_debug.exe
-  - path: out\Release\Telegram.exe.pdb
+  - path: out\Debug\Telegram.exe.pdb
     name: Telegram_debug.exe.pdb
