@@ -100,10 +100,11 @@
             'VCLinkerTool': {
               'GenerateDebugInformation': 'true',  # /DEBUG
               'OptimizeReferences': '2',
-              'LinkTimeCodeGeneration': '1',       # /LTCG
+              'LinkTimeCodeGeneration': '0',       # /LTCG
+              'LinkIncremental': '2',
             },
             'VCLibrarianTool': {
-              'LinkTimeCodeGeneration': 'true',    # /LTCG
+              'LinkTimeCodeGeneration': 'false',    # /LTCG
             },
           },
         },
