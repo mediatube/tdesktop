@@ -8,7 +8,10 @@ environment:
   GYP_MSVS_VERSION: 2019
   matrix:
    - BUILD_VERSION:
-
+  API_ID:
+    secure: 2YbTu9xNNPeYl6IUAhCS6A==
+  API_HASH:
+    secure: 88rlDnhzZhcStAhXGkc3pdM3whMbAmvqbhhrqkTr3P/B9jVFy0NwvtpvjNkSiW1r
 matrix:
   fast_finish: true
 
