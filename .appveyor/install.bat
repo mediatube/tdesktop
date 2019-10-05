@@ -1,8 +1,8 @@
 @echo off
 
-IF "%BUILD_DIR%"=="" SET BUILD_DIR=%cd%
+IF "%BUILD_DIR%"=="" SET BUILD_DIR=C:\TBuild
 SET LIB_DIR=%BUILD_DIR%\Libraries
-SET SRC_DIR=%BUILD_DIR%
+SET SRC_DIR=%BUILD_DIR%\tdesktop
 SET QT_VERSION=5_6_2
 
 call:configureBuild
