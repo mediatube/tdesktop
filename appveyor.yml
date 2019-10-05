@@ -12,7 +12,7 @@ environment:
   API_HASH:
     secure: 88rlDnhzZhcStAhXGkc3pdM3whMbAmvqbhhrqkTr3P/B9jVFy0NwvtpvjNkSiW1r
 matrix:
-  fast_finish: false
+  fast_finish: true
 
 before_build:
   - .\.appveyor\install.bat
@@ -21,10 +21,10 @@ build:
   project: Telegram\Telegram.sln
 
 configuration:
-  - Release
+  - Debug
 
 artifacts:
-  - path: out\Release\Telegram.exe
-    name: Telegram_release.exe
-  - path: out\Release\Telegram.exe.pdb
-    name: Telegram_release.exe.pdb
+  - path: out\Debug\Telegram.exe
+    name: Telegram_debug.exe
+  - path: out\Debug\Telegram.exe.pdb
+    name: Telegram_debug.exe.pdb
