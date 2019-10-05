@@ -1,6 +1,6 @@
 @echo off
 
-IF "%BUILD_DIR%"=="" SET BUILD_DIR=C:\TBuild
+IF "%BUILD_DIR%"=="" SET BUILD_DIR=C:\TBuild\build-%random%%random%
 SET LIB_DIR=%BUILD_DIR%\Libraries
 SET SRC_DIR=%BUILD_DIR%\tdesktop
 SET QT_VERSION=5_6_2
@@ -50,7 +50,9 @@ GOTO:EOF
     git submodule init
     git submodule update
     cd %SRC_DIR%\Telegram
-    call gyp\refresh.bat --api-id 17349 --api-hash 344583e45741c457fe1862106095a5eb
+    IF "%API_ID%"=="" SET API_ID=17349
+    IF "%API_HASH%"=="" SET API_HASH=344583e45741c457fe1862106095a5eb
+    call gyp\refresh.bat --api-id %API_ID% --api-hash %API_HASH%
 GOTO:EOF
 
 :configureBuild
