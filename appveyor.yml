@@ -1,7 +1,7 @@
 image: Visual Studio 2019
 test: off
 deploy: off
-
+clone_folder: C:\TBuild\tdesktop-{build}
 environment:
   GYP_MSVS_OVERRIDE_PATH: 'C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\'
   GYP_MSVS_VERSION: 2019
