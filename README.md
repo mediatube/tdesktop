@@ -1,4 +1,4 @@
-[![Codeship Status for mediatube/tdesktop](https://app.codeship.com/projects/52c378d0-b449-0137-c237-460b84ca84be/status?branch=dev)](https://app.codeship.com/projects/363708)
+[![Build status](https://ci.appveyor.com/api/projects/status/nu30r5t3sp2pany6?svg=true)](https://ci.appveyor.com/project/SlavikMIPT/tdesktop)
 # Telegram Desktop MediaTube – Based on Official Messenger
 
 Improved loading speeds.
