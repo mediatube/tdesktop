@@ -21,7 +21,7 @@ build:
   project: Telegram\Telegram.sln
 
 configuration:
-  - Release /INCREMENTAL
+  - Release
 
 artifacts:
   - path: out\Release\Telegram.exe
