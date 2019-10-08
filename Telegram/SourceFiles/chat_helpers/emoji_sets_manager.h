@@ -7,7 +7,11 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 */
 #pragma once
 
+<<<<<<< HEAD:Telegram/SourceFiles/chat_helpers/emoji_sets_manager.h
 #include "boxes/abstract_box.h"
+=======
+namespace Ui {
+>>>>>>> Squashed commit of the following::Telegram/SourceFiles/ui/main_queue_processor.h
 
 namespace Ui {
 namespace Emoji {
@@ -21,5 +25,8 @@ protected:
 
 };
 
+<<<<<<< HEAD:Telegram/SourceFiles/chat_helpers/emoji_sets_manager.h
 } // namespace Emoji
+=======
+>>>>>>> Squashed commit of the following::Telegram/SourceFiles/ui/main_queue_processor.h
 } // namespace Ui

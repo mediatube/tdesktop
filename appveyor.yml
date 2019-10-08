@@ -1,17 +1,16 @@
 image: Visual Studio 2019
-clone_folder: C:\TBuild\tdesktop
 test: off
 deploy: off
-
+clone_folder: C:\TBuild\tdesktop
 environment:
   GYP_MSVS_OVERRIDE_PATH: 'C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\'
   GYP_MSVS_VERSION: 2019
   matrix:
    - BUILD_VERSION:
-   - BUILD_VERSION: disable_register_custom_scheme	
-   - BUILD_VERSION: disable_crash_reports	
-   - BUILD_VERSION: disable_network_proxy
-
+  API_ID:
+    secure: 2YbTu9xNNPeYl6IUAhCS6A==
+  API_HASH:
+    secure: 88rlDnhzZhcStAhXGkc3pdM3whMbAmvqbhhrqkTr3P/B9jVFy0NwvtpvjNkSiW1r
 matrix:
   fast_finish: true
 
@@ -20,6 +19,9 @@ before_build:
 
 build:
   project: Telegram\Telegram.sln
+
+configuration:
+  - Debug
 
 artifacts:
   - path: out\Debug\Telegram.exe

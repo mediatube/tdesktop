@@ -1,6 +1,7 @@
 @echo off
 
 IF "%BUILD_DIR%"=="" SET BUILD_DIR=C:\TBuild
+SET PATH=%PATH%;C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Current\Bin;C:\Program Files\7-Zip
 SET LIB_DIR=%BUILD_DIR%\Libraries
 SET SRC_DIR=%BUILD_DIR%\tdesktop
 SET QT_VERSION=5_6_2
@@ -50,8 +51,10 @@ GOTO:EOF
     git submodule init
     git submodule update
     cd %SRC_DIR%\Telegram
-    call gyp\refresh.bat --api-id 17349 --api-hash 344583e45741c457fe1862106095a5eb --ci-build
- GOTO:EOF
+    IF "%API_ID%"=="" SET API_ID=17349
+    IF "%API_HASH%"=="" SET API_HASH=344583e45741c457fe1862106095a5eb
+    call gyp\refresh.bat --api-id %API_ID% --api-hash %API_HASH%
+GOTO:EOF
 
 :configureBuild
     call:logInfo "Configuring build"
@@ -63,7 +66,7 @@ GOTO:EOF
     )
 
     echo %BUILD_VERSION% | findstr /C:"disable_crash_reports">nul && (
-        set TDESKTOP_BUILD_DEFINES=%TDESKTOP_BUILD_DEFINES%,DESKTOP_APP_DISABLE_CRASH_REPORTS
+        set TDESKTOP_BUILD_DEFINES=%TDESKTOP_BUILD_DEFINES%,TDESKTOP_DISABLE_CRASH_REPORTS
     )
 
     echo %BUILD_VERSION% | findstr /C:"disable_network_proxy">nul && (
