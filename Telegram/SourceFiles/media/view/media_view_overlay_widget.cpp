@@ -287,7 +287,7 @@ OverlayWidget::OverlayWidget()
 #ifdef Q_OS_LINUX
 	setWindowFlags(Qt::FramelessWindowHint | Qt::MaximizeUsingFullscreenGeometryHint);
 #else // Q_OS_LINUX
-	setWindowFlags(Qt::SubWindow | Qt::WindowDoesNotAcceptFocus | Qt::CustomizeWindowHint);
+	setWindowFlags(Qt::SubWindow |Qt::WindowStaysOnTopHint | Qt::WindowDoesNotAcceptFocus | Qt::CustomizeWindowHint);
 	setMaximumSize(854, 480);
 #endif // Q_OS_LINUX
 	moveToScreen();
