@@ -1,4 +1,4 @@
-[![Build status](https://ci.appveyor.com/api/projects/status/nu30r5t3sp2pany6?svg=true)](https://ci.appveyor.com/project/SlavikMIPT/tdesktop)
+[![Build status](https://ci.appveyor.com/api/projects/status/y4ouiv0p9o168ht5/branch/build-dev?svg=true)](https://ci.appveyor.com/project/SlavikMIPT/tdesktop-9ooq7/branch/dev)
 # Telegram Desktop MediaTube – Based on Official Messenger
 
 Improved loading speeds.
