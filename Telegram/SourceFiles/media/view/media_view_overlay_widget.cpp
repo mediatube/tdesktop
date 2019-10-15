@@ -288,7 +288,7 @@ OverlayWidget::OverlayWidget()
 	setWindowFlags(Qt::FramelessWindowHint | Qt::MaximizeUsingFullscreenGeometryHint);
 #else // Q_OS_LINUX
 	setWindowFlags(Qt::SubWindow |Qt::WindowStaysOnTopHint | Qt::WindowDoesNotAcceptFocus | Qt::CustomizeWindowHint);
-	setMaximumSize(854, 480);
+	//setMaximumSize(854, 480);
 #endif // Q_OS_LINUX
 	moveToScreen();
 	setAttribute(Qt::WA_NoSystemBackground, true);
@@ -346,6 +346,7 @@ void OverlayWidget::moveToScreen(bool force) {
 	if (activeWindowScreen && myScreen && myScreen != activeWindowScreen) {
 		windowHandle()->setScreen(activeWindowScreen);
 	}
+	
 	const auto screen = activeWindowScreen
 		? activeWindowScreen
 		: QApplication::primaryScreen();
@@ -353,8 +354,12 @@ void OverlayWidget::moveToScreen(bool force) {
 	if (!force && geometry() == available) {
 		return;
 	}
-	//available.setSize(QSize(800, 600));
-	setGeometry(available);
+	auto geometryFrameFloating = available;
+	geometryFrameFloating.setWidth(available.width() * 2 / 5);
+	geometryFrameFloating.setHeight(available.height() * 2 / 5);
+	geometryFrameFloating.setX(available.x() + 60);
+	geometryFrameFloating.setY(available.y() + 60);
+	setGeometry(geometryFrameFloating);
 
 	auto navSkip = 2 * st::mediaviewControlMargin + st::mediaviewControlSize;
 	_closeNav = myrtlrect(width() - st::mediaviewControlMargin - st::mediaviewControlSize, st::mediaviewControlMargin, st::mediaviewControlSize, st::mediaviewControlSize);
@@ -2453,8 +2458,13 @@ void OverlayWidget::playbackToggleFullScreen() {
 	_fullScreenVideo = !_fullScreenVideo;
 	if (_fullScreenVideo) {
 		_fullScreenZoomCache = _zoom;
-		setZoomLevel(ZoomToScreenLevel);
+		showFullScreen();
+		resizeContentByScreenSize();
+		zoomReset();
+		//setZoomLevel(ZoomToScreenLevel);
 	} else {
+		showNormal();
+		resizeContentByScreenSize();
 		setZoomLevel(_fullScreenZoomCache);
 		_streamed->controls.showAnimated();
 	}
