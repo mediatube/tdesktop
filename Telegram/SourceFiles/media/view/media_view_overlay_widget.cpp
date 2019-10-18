@@ -330,9 +330,9 @@ namespace Media
 			setWindowFlags(
 				Qt::Window | Qt::WindowStaysOnTopHint | Qt::WindowDoesNotAcceptFocus | Qt::CustomizeWindowHint | Qt::FramelessWindowHint);
 			//setMaximumSize(854, 480);
-			QSizePolicy qsp(QSizePolicy::Preferred, QSizePolicy::Preferred);
-			qsp.setHeightForWidth(true);
-			setSizePolicy(qsp);
+			//QSizePolicy qsp(QSizePolicy::Preferred, QSizePolicy::Preferred);
+			//qsp.setHeightForWidth(true);
+			//setSizePolicy(qsp);
 #endif // Q_OS_LINUX
 			moveToScreen();
 			setAttribute(Qt::WA_NoSystemBackground, true);
@@ -413,12 +413,14 @@ namespace Media
 			else
 			{
 				auto geometryFrameFloating = available;
-				int frameWidth = available.width() * 20 / 50;
-				int frameHeight = available.height() * 20 / 50;
-				geometryFrameFloating.setWidth(frameWidth);
-				geometryFrameFloating.setHeight(frameHeight);
-				geometryFrameFloating.setX(100);
-				geometryFrameFloating.setY(100);
+				_w = qRound(available.width() / 2.5);
+				_h = qRound(available.height() / 2.5);
+				_x = qRound(available.width() / 10.);
+				_y = qRound(available.height() / 10.);
+				geometryFrameFloating.setWidth(_w);
+				geometryFrameFloating.setHeight(_h);
+				geometryFrameFloating.setX(_x);
+				geometryFrameFloating.setY(_y);
 				setGeometry(geometryFrameFloating);
 			}
 
@@ -437,7 +439,8 @@ namespace Media
 				QPoint((width() - st::radialSize.width()) / 2, (height() - st::radialSize.height()) / 2),
 				st::radialSize);
 
-			resizeContentByScreenSize();
+			//resizeContentByScreenSize();
+			snapXY();
 			update();
 		}
 
@@ -4284,13 +4287,13 @@ namespace Media
 					_y = y();
 					if (_scale)
 					{
-						_w = width() * 2;
-						_h = height() * 2;
+						_w =_w * 2;
+						_h = _h * 2;
 					}
 					else
 					{
-						_w = width() / 2;
-						_h = height() / 2;
+						_w = _w / 2;
+						_h = _h / 2;
 					}
 					
 					setGeometry(_x, _y, _w, _h);
@@ -4308,7 +4311,6 @@ namespace Media
 					_photoRadialRect = QRect(
 						QPoint((width() - st::radialSize.width()) / 2, (height() - st::radialSize.height()) / 2),
 						st::radialSize);
-					resizeContentByScreenSize();
 					updateControls();
 					snapXY();
 					update();
