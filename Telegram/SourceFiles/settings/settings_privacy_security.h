@@ -11,7 +11,6 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 #include "apiwrap.h"
 
 class EditPrivacyController;
-class BoxContent;
 
 namespace Ui {
 class BoxContent;

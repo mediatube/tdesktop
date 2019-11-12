@@ -24,12 +24,12 @@ mediaviewPlayback: MediaSlider {
 	duration: mediaviewOverDuration;
 }
 
-mediaviewControllerSize: size(450px, 40px);
+mediaviewControllerSize: size(600px, 50px);
 mediaviewPlayProgressLabel: LabelSimple(defaultLabelSimple) {
 	font: semiboldFont;
 	textFg: mediaviewPlaybackProgressFg;
 }
-mediaviewPlayProgressTop: 5px;
+mediaviewPlayProgressTop: 11px;
 mediaviewPlayButton: IconButton {
 	width: 25px;
 	height: 24px;
@@ -54,10 +54,10 @@ mediaviewFullScreenButton: IconButton(mediaviewPlayButton) {
 mediaviewFullScreenOutIcon: icon {{ "media_fullscreen_from", mediaviewPlaybackIconFg, point(0px, 0px) }};
 mediaviewFullScreenOutIconOver: icon {{ "media_fullscreen_from", mediaviewPlaybackIconFgOver, point(0px, 0px) }};
 
-mediaviewPlaybackTop: 18px;
+mediaviewPlaybackTop: 28px;
 
 mediaviewVolumeWidth: 60px;
-mediaviewControllerRadius: 20px;
+mediaviewControllerRadius: 25px;
 
 mediaviewLeft: icon {{ "mediaview_next-flip_horizontal", mediaviewControlFg }};
 mediaviewRight: icon {{ "mediaview_next", mediaviewControlFg }};

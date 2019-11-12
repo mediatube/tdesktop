@@ -7,4 +7,3 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 */
 #pragma once
 
-// Precompiled header helper.
